@@ -286,10 +286,8 @@ export default function Dashboard() {
       <header>
         <div className="container header-content">
           <div className="logo-group">
-            <h1 className="logo-title">
-              Next.hub <span>| Atendimento</span>
-            </h1>
-            <p className="logo-subtitle">Painel de Controle</p>
+            <h1 className="logo-title">BELCOLORE</h1>
+            <p className="logo-subtitle">Painel de Controle | Fila de Atendimento</p>
           </div>
           <div>
             <button className="btn-primary" onClick={handleOpenCreateModal}>
