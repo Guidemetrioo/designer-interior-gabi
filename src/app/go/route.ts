@@ -145,8 +145,12 @@ export async function GET(request: NextRequest) {
     
     const whatsappUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(textMessage)}`;
 
-    // 5. Redirect
-    return NextResponse.redirect(whatsappUrl, 302);
+    // 5. Redirect with Cache-Control headers to prevent browser caching of the 302 redirect
+    const response = NextResponse.redirect(whatsappUrl, 302);
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
+    return response;
   } catch (error) {
     console.error("Redirect error:", error);
     return new NextResponse(
