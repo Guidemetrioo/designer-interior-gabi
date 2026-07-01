@@ -6,13 +6,16 @@ export default function ClientLandingPage() {
   return (
     <div className="landing-wrapper">
       <header className="landing-header">
-        <div className="container">
-          <div className="logo-group" style={{ alignItems: "center" }}>
+        <div className="container" style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div className="logo-group">
             <h1 className="logo-title" style={{ fontSize: "1.4rem" }}>
               Next.hub <span>| Studio</span>
             </h1>
             <p className="logo-subtitle">Design de Interiores</p>
           </div>
+          <Link href="/admin" className="btn-secondary" style={{ padding: "8px 16px", fontSize: "0.85rem" }}>
+            Painel Admin
+          </Link>
         </div>
       </header>
 
