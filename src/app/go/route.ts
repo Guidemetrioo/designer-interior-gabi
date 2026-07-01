@@ -97,15 +97,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // 2. Sort by leadsCount (ascending) then by lastAssignedAt (ascending)
-    // If lastAssignedAt is null, it should come first to ensure newly added sellers get a lead.
+    // 2. Sort strictly by lastAssignedAt (ascending) to guarantee strict round-robin
+    // Sellers who never got a lead (null) come first, sorted by their creation order (id).
     const sortedSellers = [...activeSellers].sort((a, b) => {
-      if (a.leadsCount !== b.leadsCount) {
-        return a.leadsCount - b.leadsCount;
+      const timeA = a.lastAssignedAt ? new Date(a.lastAssignedAt).getTime() : 0;
+      const timeB = b.lastAssignedAt ? new Date(b.lastAssignedAt).getTime() : 0;
+      if (timeA !== timeB) {
+        return timeA - timeB;
       }
-      const timeA = a.lastAssignedAt ? a.lastAssignedAt.getTime() : 0;
-      const timeB = b.lastAssignedAt ? b.lastAssignedAt.getTime() : 0;
-      return timeA - timeB;
+      return a.id - b.id; // Stable fallback by creation order
     });
 
     const selectedSeller = sortedSellers[0];

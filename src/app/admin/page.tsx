@@ -90,18 +90,18 @@ export default function Dashboard() {
     }, 3000);
   };
 
-  // Determine who is next in line based on same logic as redirect endpoint
+  // Determine who is next in line based on same logic as redirect endpoint (strict lastAssignedAt round-robin)
   const nextSellerId = useMemo(() => {
     const activeSellers = data.sellers.filter((s) => s.active);
     if (activeSellers.length === 0) return null;
 
     const sorted = [...activeSellers].sort((a, b) => {
-      if (a.leadsCount !== b.leadsCount) {
-        return a.leadsCount - b.leadsCount;
-      }
       const timeA = a.lastAssignedAt ? new Date(a.lastAssignedAt).getTime() : 0;
       const timeB = b.lastAssignedAt ? new Date(b.lastAssignedAt).getTime() : 0;
-      return timeA - timeB;
+      if (timeA !== timeB) {
+        return timeA - timeB;
+      }
+      return a.id - b.id; // Stable fallback by creation order
     });
 
     return sorted[0]?.id;
