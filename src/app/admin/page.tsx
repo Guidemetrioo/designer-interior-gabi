@@ -30,6 +30,14 @@ interface DashboardData {
   recentLogs: LeadLog[];
 }
 
+const getNamePriority = (name: string): number => {
+  const normalized = name.toLowerCase().trim();
+  if (normalized.startsWith("gabriela")) return 1;
+  if (normalized.startsWith("luiza")) return 2;
+  if (normalized.startsWith("ashley")) return 3;
+  return 99; // fallback for others
+};
+
 export default function Dashboard() {
   const [data, setData] = useState<DashboardData>({
     sellers: [],
@@ -101,7 +109,12 @@ export default function Dashboard() {
       if (timeA !== timeB) {
         return timeA - timeB;
       }
-      return a.id - b.id; // Stable fallback by creation order
+      const priorityA = getNamePriority(a.name);
+      const priorityB = getNamePriority(b.name);
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+      return a.id - b.id; // Stable fallback
     });
 
     return sorted[0]?.id;

@@ -3,6 +3,14 @@ import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+const getNamePriority = (name: string): number => {
+  const normalized = name.toLowerCase().trim();
+  if (normalized.startsWith("gabriela")) return 1;
+  if (normalized.startsWith("luiza")) return 2;
+  if (normalized.startsWith("ashley")) return 3;
+  return 99; // fallback for others
+};
+
 export async function GET(request: NextRequest) {
   try {
     // 1. Fetch all active sellers
@@ -98,14 +106,19 @@ export async function GET(request: NextRequest) {
     }
 
     // 2. Sort strictly by lastAssignedAt (ascending) to guarantee strict round-robin
-    // Sellers who never got a lead (null) come first, sorted by their creation order (id).
+    // Sellers who never got a lead (null) come first, sorted by name priority (Gabriela -> Luiza -> Ashley).
     const sortedSellers = [...activeSellers].sort((a, b) => {
       const timeA = a.lastAssignedAt ? new Date(a.lastAssignedAt).getTime() : 0;
       const timeB = b.lastAssignedAt ? new Date(b.lastAssignedAt).getTime() : 0;
       if (timeA !== timeB) {
         return timeA - timeB;
       }
-      return a.id - b.id; // Stable fallback by creation order
+      const priorityA = getNamePriority(a.name);
+      const priorityB = getNamePriority(b.name);
+      if (priorityA !== priorityB) {
+        return priorityA - priorityB;
+      }
+      return a.id - b.id; // Stable fallback
     });
 
     const selectedSeller = sortedSellers[0];
