@@ -1,0 +1,32 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+model Seller {
+  id             Int       @id @default(autoincrement())
+  name           String
+  phone          String    // WhatsApp number, e.g., "5511999999999" (only digits)
+  message        String?   // Custom welcome text message for the link
+  active         Boolean   @default(true)
+  leadsCount     Int       @default(0)
+  lastAssignedAt DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  logs           LeadLog[]
+}
+
+model LeadLog {
+  id          Int      @id @default(autoincrement())
+  sellerId    Int
+  sellerName  String
+  sellerPhone String
+  createdAt   DateTime @default(now())
+  clientIp    String?
+  userAgent   String?
+  seller      Seller   @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+}
