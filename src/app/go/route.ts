@@ -6,8 +6,8 @@ export const dynamic = "force-dynamic";
 const getNamePriority = (name: string): number => {
   const normalized = name.toLowerCase().trim();
   if (normalized.startsWith("gabriela")) return 1;
-  if (normalized.startsWith("luiza")) return 2;
-  if (normalized.startsWith("ashley")) return 3;
+  if (normalized.startsWith("ashley")) return 2;
+  if (normalized.startsWith("luiza")) return 3;
   return 99; // fallback for others
 };
 
